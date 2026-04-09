@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export async function GET() {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("content_items")
     .select("*")
     .order("scheduled_for", { ascending: true });
@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("content_items")
     .insert([body])
     .select()
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   const { id, ...updates } = await req.json();
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("content_items")
     .update(updates)
     .eq("id", id)
@@ -45,7 +45,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const { id } = await req.json();
-  const { error } = await supabase.from("content_items").delete().eq("id", id);
+  const { error } = await getSupabase().from("content_items").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }
